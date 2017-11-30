@@ -2,7 +2,6 @@
     "require": {
         "phpmailer/phpmailer": "^6.0",
         "symfony/yaml": "^3.3",
-        "vlucas/phpdotenv": "^2.4",
         "twig/twig": "^2.4"
     }
 }

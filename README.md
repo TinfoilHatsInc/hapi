@@ -1,4 +1,4 @@
-Notification system
+HAPI
 ===========
 
-The notification system of Tinfoilhats Inc.
+The main API system of Tinfoilhats Inc.

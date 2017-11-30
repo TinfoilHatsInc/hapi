@@ -2,9 +2,8 @@
 
 namespace core\rest;
 
-use HttpRequestException;
+use PHPMailer\PHPMailer\Exception;
 use Symfony\Component\Yaml\Yaml;
-use UnexpectedValueException;
 
 class RestController
 {
@@ -13,8 +12,6 @@ class RestController
 
   /**
    * @return mixed
-   * @throws HttpRequestException
-   * @throws UnexpectedValueException
    */
   private function getMethods()
   {
@@ -89,8 +86,12 @@ class RestController
         (new ErrorResponse(ErrorResponse::HTTP_INTERNAL_SERVER_ERROR, 'No controller defined for called method.'))->send();
       }
       $controller =  $methodConfig['controller'];
-      $value = $this->callController($controller, $params);
-      (new SuccessResponse(SuccessResponse::HTTP_OK, $value))->send();
+      try {
+        $value = $this->callController($controller, $params);
+        (new SuccessResponse(SuccessResponse::HTTP_OK, $value))->send();
+      } catch (Exception $e) {
+        (new ErrorResponse(ErrorResponse::HTTP_INTERNAL_SERVER_ERROR, $e->getMessage()))->send();
+      }
     } else {
       (new ErrorResponse(ErrorResponse::HTTP_BAD_REQUEST, 'Unknown method called.'))->send();
     }

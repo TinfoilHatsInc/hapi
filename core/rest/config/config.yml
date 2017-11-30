@@ -1,0 +1,4 @@
+rest_config:
+  post:
+    sendNotification:
+      controller: 'core\notification\NotificationController::sendNotification'

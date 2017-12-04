@@ -7,7 +7,6 @@ use Symfony\Component\Yaml\Yaml;
 use TinfoilHMAC\API\SecureIncomingRequest;
 use TinfoilHMAC\Exception\InvalidRequestException;
 use TinfoilHMAC\Exception\MissingParameterException;
-use Twig\Error\Error;
 
 class RestController
 {

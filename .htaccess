@@ -1,0 +1,11 @@
+Options All -Indexes
+Options +FollowSymLinks +ExecCGI
+
+RewriteEngine On
+
+RedirectMatch 404 /\.git
+
+RewriteRule ^hapi/([a-zA-Z0-9]*)$ /index.php?method=$1 [L,QSA]
+
+RewriteCond %{THE_REQUEST} !/hapi/([a-zA-Z0-9]*) [NC]
+RewriteRule ^ - [NC,R=404,L]

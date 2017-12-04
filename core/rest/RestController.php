@@ -4,6 +4,10 @@ namespace core\rest;
 
 use PHPMailer\PHPMailer\Exception;
 use Symfony\Component\Yaml\Yaml;
+use TinfoilHMAC\API\SecureIncomingRequest;
+use TinfoilHMAC\Exception\InvalidRequestException;
+use TinfoilHMAC\Exception\MissingParameterException;
+use Twig\Error\Error;
 
 class RestController
 {
@@ -74,10 +78,19 @@ class RestController
 
   public function handleRequest()
   {
-    $methods = $this->getMethods();
-    $request = RequestController::getRequest();
 
-    $method = $request->getMethod();
+    $methods = $this->getMethods();
+    try {
+      $request = SecureIncomingRequest::create();
+    } catch (InvalidRequestException $e) {
+      (new ErrorResponse(ErrorResponse::HTTP_BAD_REQUEST, $e->getMessage()))->send();
+    } catch (MissingParameterException $e) {
+      (new ErrorResponse(ErrorResponse::HTTP_BAD_REQUEST, $e->getMessage()))->send();
+    } catch (Exception $e) {
+      (new ErrorResponse(ErrorResponse::HTTP_INTERNAL_SERVER_ERROR, 'Unknown error.'))->send();
+    }
+
+    $method = $request->getApiMethod();
     $params = $request->getParams();
 
     if(array_key_exists($method, $methods)) {

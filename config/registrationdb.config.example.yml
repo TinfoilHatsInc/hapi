@@ -1,0 +1,4 @@
+dbusername: ''
+dbpassword: ''
+host: 'localhost'
+dbname: 'CHUB_IDs'

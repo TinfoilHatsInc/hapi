@@ -2,20 +2,24 @@
 
 namespace core\hapi;
 
-class Server{
+use core\rest\ErrorResponse;
 
-	public function __construct(){
-		
-	}
+class Server
+{
 
-	public function chubRegistration($chubid){
-		if(strlen($chubid)>20 || strlen($chubid)<20){
-			new ErrorResponse(ErrorResponse::HTTP_BAD_REQUEST, 'Malformed CHUB ID'))->send();
-		}
-		else{
-			$db = new RegistrationDBController;
-		}
-	}
+  public function __construct()
+  {
+
+  }
+
+  public function chubRegistration($chubid)
+  {
+    if (strlen($chubid) > 20 || strlen($chubid) < 20) {
+      (new ErrorResponse(ErrorResponse::HTTP_BAD_REQUEST, 'Malformed CHUB ID'))->send();
+    } else {
+      $db = new RegistrationDBController;
+    }
+  }
 
 
 }

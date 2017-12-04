@@ -2,3 +2,8 @@ rest_config:
   post:
     sendNotification:
       controller: 'core\notification\NotificationController::sendNotification'
+    registration:
+      controller: 'core\hapi\Server::incomingRegistrationController'
+  get:
+    registration:
+      controller: 'core\hapi\Server::chubRegistration'

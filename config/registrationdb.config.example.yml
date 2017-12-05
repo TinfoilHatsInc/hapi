@@ -1,4 +1,4 @@
-dbusername: ''
-dbpassword: ''
+dbusername: 'tinfoil'
+dbpassword: '342b211003c2a3108dfc03f2fcfaec39'
 host: 'localhost'
 dbname: 'CHUB_IDs'

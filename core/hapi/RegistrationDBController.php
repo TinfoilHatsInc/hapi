@@ -9,6 +9,7 @@ class RegistrationDBController
 {
   
   private $db;
+  private $result;
 
   public function dbCheck($checkid)
   {
@@ -30,19 +31,21 @@ class RegistrationDBController
     $checkid = filter_var($checkid, FILTER_SANITIZE_STRING);
     $stmt = $this->db->prepare("SELECT * from IDTable WHERE id = ?");
     $stmt->bind_param('s', $checkid);
-    $result = $this->db->query($stmt);
+    this->$result = $this->db->query($stmt);
+    $this->db->close();
+  }
 
-    if ($result->num_rows > 0) {
+  public function print(){
+  	if (this->$result->num_rows > 0) {
       echo "<table><tr><th>ID</th><th>User</th></tr>";
       // output data of each row
-      while ($row = $result->fetch_assoc()) {
+      while ($row = this->$result->fetch_assoc()) {
         echo "<tr><td>" . $row["id"] . "</td><td>" . $row["user"] . "</td></tr>";
       }
       echo "</table>";
     } else {
       echo "0 results";
     }
-    $this->db->close();
   }
 
 

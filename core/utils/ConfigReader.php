@@ -29,7 +29,7 @@ class ConfigReader
       if (!file_exists($filePath)) {
         throw new Exception('Config \'' . $this->configFileName . '\' could not be found.');
       }
-      $this->config = Yaml::parse(file_get_contents($filePath));
+      $this->config = Yaml::parse(file_get_contents($filePath), FILE_USE_INCLUDE_PATH);
     }
     return $this->config;
 

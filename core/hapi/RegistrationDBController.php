@@ -31,7 +31,7 @@ class RegistrationDBController
     $checkid = filter_var($checkid, FILTER_SANITIZE_STRING);
     $stmt = $this->db->prepare("SELECT * from IDTable WHERE id = ?");
     $stmt->bind_param('s', $checkid);
-    $this->result = $this->db->query($stmt);
+    $this->result = $stmt->execute();#$this->db->query($stmt);
     $this->db->close();
   }
 

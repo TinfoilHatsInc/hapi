@@ -25,7 +25,7 @@ class ConfigReader
 
     if (empty($this->config)) {
 
-      $filePath = __DIR__ . '/../../' . $this->configFileName . '.config.yml';
+      $filePath = __DIR__ . '/../../config/' . $this->configFileName . '.config.yml';
       if (!file_exists($filePath)) {
         throw new Exception('Config \'' . $this->configFileName . '\' could not be found.');
       }

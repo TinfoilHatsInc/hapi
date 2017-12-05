@@ -25,11 +25,11 @@ class ConfigReader
 
     if (empty($this->config)) {
 
-      $filePath = __DIR__ . '/../../' . $this->configFileName . '.config.yml';
+      $filePath = __DIR__ . '/../../config/' . $this->configFileName . '.config.yml';
       if (!file_exists($filePath)) {
         throw new Exception('Config \'' . $this->configFileName . '\' could not be found.');
       }
-      $this->config = Yaml::parse(file_get_contents($filePath));
+      $this->config = Yaml::parse(file_get_contents($filePath), FILE_USE_INCLUDE_PATH);
     }
     return $this->config;
 
@@ -52,11 +52,11 @@ class ConfigReader
 
     $keyValues = [];
     $missing = [];
-    foreach ($keys as $key) {
-      if (!array_key_exists($key, $config) || $config[$key] == '') {
-        $missing[] = '\'' . $key . '\'';
+    foreach ($keys as $keyItem) {
+      if (!array_key_exists($keyItem, $config) || $config[$keyItem] == '') {
+        $missing[] = '\'' . $keyItem . '\'';
       } else {
-        $keyValues[$key] = $config[$key];
+        $keyValues[$keyItem] = $config[$keyItem];
       }
     }
 

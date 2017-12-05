@@ -4,6 +4,7 @@ namespace core\notification;
 
 use core\rest\ErrorResponse;
 use core\rest\SuccessResponse;
+use core\utils\ConfigReader;
 use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\PHPMailer;
 use Symfony\Component\Yaml\Yaml;
@@ -27,7 +28,13 @@ class MailNotification extends Notification
   public function send()
   {
 
-    $mailCredentials = Yaml::parse(file_get_contents(__DIR__.'/../../config/mail.config.yml'));
+    $mailCredentials = (new ConfigReader('mail'))->requireConfig([
+      'mail_host',
+      'mail_username',
+      'mail_password',
+      'mail_secure',
+      'mail_port',
+    ]);
 
     //Enable SMTP debugging.
     $this->mail->SMTPDebug = 0;

@@ -2,8 +2,8 @@
 
 namespace core\hapi;
 
+use core\utils\ConfigReader;
 use mysqli;
-use Symfony\Component\Yaml\Yaml;
 
 class RegistrationDBController
 {
@@ -13,9 +13,19 @@ class RegistrationDBController
   public function dbCheck($checkid)
   {
 
-    $config = Yaml::parse(file_get_contents(__DIR__ . '/../../config/registrationdb.config.yml'));
+    $config = (new ConfigReader('registrationdb'))->requireConfig([
+      'host',
+      'dbusername',
+      'dbpassword',
+      'dbname',
+    ]);
 
-    $this->db = new mysqli($config['host'], $config['dbusername'], $config['dbpassword'], $config['dbname']);
+    $this->db = new mysqli(
+      $config['host'],
+      $config['dbusername'],
+      $config['dbpassword'],
+      $config['dbname']
+    );
 
     $checkid = filter_var($checkid, FILTER_SANITIZE_STRING);
     $stmt = $this->db->prepare("SELECT * from IDTable WHERE id = ?");

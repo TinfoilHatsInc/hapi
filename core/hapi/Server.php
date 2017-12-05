@@ -12,7 +12,7 @@ class Server
       (new ErrorResponse(ErrorResponse::HTTP_BAD_REQUEST, 'Malformed CHUB ID'))->send();
     } else {
       $db = new RegistrationDBController;
-      $db->dbCheck();
+      $db->dbCheck($chubid);
       $db->print();
     }
   }

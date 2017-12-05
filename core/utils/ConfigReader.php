@@ -52,11 +52,11 @@ class ConfigReader
 
     $keyValues = [];
     $missing = [];
-    foreach ($keys as $key) {
-      if (!array_key_exists($key, $config) || $config[$key] == '') {
-        $missing[] = '\'' . $key . '\'';
+    foreach ($keys as $keyItem) {
+      if (!array_key_exists($keyItem, $config) || $config[$keyItem] == '') {
+        $missing[] = '\'' . $keyItem . '\'';
       } else {
-        $keyValues[$key] = $config[$key];
+        $keyValues[$keyItem] = $config[$keyItem];
       }
     }
 

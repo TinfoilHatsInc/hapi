@@ -2,6 +2,7 @@
 
 namespace core\hapi;
 
+use core\rest\Response;
 use core\utils\ConfigReader;
 use mysqli;
 use core\rest\SuccessResponse;
@@ -11,8 +12,11 @@ class RegistrationDBController
 {
   
   private $db;
-  private $result;
 
+  /**
+   * @param $checkid
+   * @return Response
+   */
   public function dbCheck($checkid)
   {
 
@@ -35,27 +39,16 @@ class RegistrationDBController
     $stmt->bind_param('s', $checkid);
     $stmt->execute();
     $stmtResult = $stmt->get_result();
-    $this->result = [];
+    $result = [];
     while($row = $stmtResult->fetch_array(MYSQLI_ASSOC)) {
-    	$this->result[] = $row;
+    	$result[] = $row;
     }
     $this->db->close();
-  }
-
-  public function print(){
-  	if (count($this->result) > 0) {
-  	  (new SuccessResponse(SuccessResponse::HTTP_OK, $this->result))->send();
-      echo "<table><tr><th>ID</th><th>User</th></tr>";
-      // output data of each row
-      foreach ($this->result as $row) {
-        echo "<tr><td>" . $row["deviceid"] . "</td><td>" . $row["user"] . "</td></tr>";
-      }
-      echo "</table>";
+    if (count($result) > 0) {
+      return new SuccessResponse(SuccessResponse::HTTP_OK, $result);
     } else {
-      (new ErrorResponse(ErrorResponse::HTTP_NOT_FOUND, $this->result))->send();
-      echo "0 results";
+      return new ErrorResponse(ErrorResponse::HTTP_NOT_FOUND, $result);
     }
   }
-
 
 }

@@ -29,10 +29,10 @@ class RestController
         if (array_key_exists($method, $methods)) {
           $this->methods = $methods[$method];
         } else {
-          (new ErrorResponse(ErrorResponse::HTTP_METHOD_NOT_ALLOWED, 'HTTP-method ' . strtoupper($method) . ' not allowed.'))->send();
+          return new ErrorResponse(ErrorResponse::HTTP_METHOD_NOT_ALLOWED, 'HTTP-method ' . strtoupper($method) . ' not allowed.');
         }
       } else {
-        (new ErrorResponse(ErrorResponse::HTTP_INTERNAL_SERVER_ERROR, 'No REST config defined.'))->send();
+        return new ErrorResponse(ErrorResponse::HTTP_INTERNAL_SERVER_ERROR, 'No REST config defined.');
       }
     }
     return $this->methods;
@@ -59,7 +59,7 @@ class RestController
           if($param->isDefaultValueAvailable()) {
             $params[$paramName] = $param->getDefaultValue();
           } else {
-            (new ErrorResponse(ErrorResponse::HTTP_BAD_REQUEST, 'Parameter missing.'))->send();
+            return new ErrorResponse(ErrorResponse::HTTP_BAD_REQUEST, 'Parameter missing.');
           }
         }
         $sortedParams[$paramName] = $params[$paramName];
@@ -69,24 +69,30 @@ class RestController
       } else {
         $result = call_user_func_array([new $class(), $function], $sortedParams);
       }
-      return $result;
+      return new SuccessResponse(SuccessResponse::HTTP_OK, $result);
     } else {
-      (new ErrorResponse(ErrorResponse::HTTP_INTERNAL_SERVER_ERROR, 'Invalid controller called.'))->send();
+      return new ErrorResponse(ErrorResponse::HTTP_INTERNAL_SERVER_ERROR, 'Invalid controller called.');
     }
   }
 
+  /**
+   * @return Response
+   */
   public function handleRequest()
   {
 
     $methods = $this->getMethods();
+    if(get_parent_class($methods) == ErrorResponse::class) {
+      return $methods;
+    }
     try {
       $request = SecureIncomingRequest::create();
     } catch (InvalidRequestException $e) {
-      (new ErrorResponse(ErrorResponse::HTTP_BAD_REQUEST, $e->getMessage()))->send();
+      return new ErrorResponse(ErrorResponse::HTTP_BAD_REQUEST, $e->getMessage());
     } catch (MissingParameterException $e) {
-      (new ErrorResponse(ErrorResponse::HTTP_BAD_REQUEST, $e->getMessage()))->send();
+      return new ErrorResponse(ErrorResponse::HTTP_BAD_REQUEST, $e->getMessage());
     } catch (Exception $e) {
-      (new ErrorResponse(ErrorResponse::HTTP_INTERNAL_SERVER_ERROR, 'Unknown error.'))->send();
+      return new ErrorResponse(ErrorResponse::HTTP_INTERNAL_SERVER_ERROR, 'Unknown error.');
     }
 
     $method = $request->getApiMethod();
@@ -95,17 +101,16 @@ class RestController
     if(array_key_exists($method, $methods)) {
       $methodConfig = $methods[$method];
       if(!array_key_exists('controller', $methodConfig)) {
-        (new ErrorResponse(ErrorResponse::HTTP_INTERNAL_SERVER_ERROR, 'No controller defined for called method.'))->send();
+        return new ErrorResponse(ErrorResponse::HTTP_INTERNAL_SERVER_ERROR, 'No controller defined for called method.');
       }
       $controller =  $methodConfig['controller'];
       try {
-        $value = $this->callController($controller, $params);
-        (new SuccessResponse(SuccessResponse::HTTP_OK, $value))->send();
+        return $this->callController($controller, $params);
       } catch (Exception $e) {
-        (new ErrorResponse(ErrorResponse::HTTP_INTERNAL_SERVER_ERROR, $e->getMessage()))->send();
+        return new ErrorResponse(ErrorResponse::HTTP_INTERNAL_SERVER_ERROR, $e->getMessage());
       }
     } else {
-      (new ErrorResponse(ErrorResponse::HTTP_BAD_REQUEST, 'Unknown method called.'))->send();
+      return new ErrorResponse(ErrorResponse::HTTP_BAD_REQUEST, 'Unknown method called.');
     }
 
   }

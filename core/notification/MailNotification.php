@@ -3,6 +3,7 @@
 namespace core\notification;
 
 use core\rest\ErrorResponse;
+use core\rest\Response;
 use core\rest\SuccessResponse;
 use core\utils\ConfigReader;
 use PHPMailer\PHPMailer\Exception;
@@ -25,6 +26,9 @@ class MailNotification extends Notification
     parent::__construct($message, $subject, $receiver);
   }
 
+  /**
+   * @return Response
+   */
   public function send()
   {
 
@@ -73,12 +77,12 @@ class MailNotification extends Notification
     $this->mail->Body = $body;
     try {
       if (!$this->mail->send()) {
-        (new ErrorResponse(ErrorResponse::HTTP_INTERNAL_SERVER_ERROR, 'Mail could not be send.'))->send();
+        return new ErrorResponse(ErrorResponse::HTTP_INTERNAL_SERVER_ERROR, 'Mail could not be send.');
       } else {
-        (new SuccessResponse(SuccessResponse::HTTP_OK, 'Notification send.'))->send();
+        return new SuccessResponse(SuccessResponse::HTTP_OK, 'Notification send.');
       }
     } catch (Exception $e) {
-      (new ErrorResponse(ErrorResponse::HTTP_INTERNAL_SERVER_ERROR, $e->getMessage()))->send();
+      return new ErrorResponse(ErrorResponse::HTTP_INTERNAL_SERVER_ERROR, $e->getMessage());
     }
 
   }

@@ -9,6 +9,6 @@ use core\rest\RestController;
 header('Content-type:application/json');
 
 $restController = new RestController();
-$restController->handleRequest();
+$restController->handleRequest()->send();
 
 ?>

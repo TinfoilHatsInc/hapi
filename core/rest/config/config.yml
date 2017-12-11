@@ -6,4 +6,4 @@ rest_config:
       controller: 'core\hapi\Server::incomingRegistrationController'
   get:
     registration:
-      controller: 'core\hapi\Server::chubRegistration'
+      controller: 'core\registration\RegistrationController::chubRegistration'

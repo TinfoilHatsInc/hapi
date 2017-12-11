@@ -41,7 +41,7 @@ class RestController
   /**
    * @param $controllerName
    * @param array $params
-   * @return mixed
+   * @return Response
    */
   private function callController($controllerName, $params = [])
   {
@@ -65,11 +65,10 @@ class RestController
         $sortedParams[$paramName] = $params[$paramName];
       }
       if ($reflectionMethod->isStatic()) {
-        $result = call_user_func_array($class . '::' . $function, $sortedParams);
+        return call_user_func_array($class . '::' . $function, $sortedParams);
       } else {
-        $result = call_user_func_array([new $class(), $function], $sortedParams);
+        return call_user_func_array([new $class(), $function], $sortedParams);
       }
-      return new SuccessResponse(SuccessResponse::HTTP_OK, $result);
     } else {
       return new ErrorResponse(ErrorResponse::HTTP_INTERNAL_SERVER_ERROR, 'Invalid controller called.');
     }

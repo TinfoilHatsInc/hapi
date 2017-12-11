@@ -21,7 +21,7 @@ abstract class Response
   }
 
   public function send() {
-    header('HTTP/1.0 ' . $this->code);
+    http_response_code($this->code);
     echo json_encode($this->getBody());
     exit;
   }

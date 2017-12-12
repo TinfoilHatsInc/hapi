@@ -3,24 +3,20 @@
 namespace core\registration;
 
 use core\database\RegistrationDBController;
-use core\rest\ErrorResponse;
 use core\rest\Response;
+use core\rest\SuccessResponse;
 
 class RegistrationController
 {
 
   /**
-   * @param $chubid string
+   * @param $chubId string
    * @return Response
    */
-  public function chubRegistration($chubid)
-{
-  if (strlen($chubid) != 20) {
-    return new ErrorResponse(ErrorResponse::HTTP_BAD_REQUEST, 'Malformed CHUB ID.');
-  } else {
+  public function chubRegistration($chubId)
+  {
     $db = new RegistrationDBController;
-    return $db->dbCheck($chubid);
+    return new SuccessResponse(SuccessResponse::HTTP_OK, $db->checkChubId($chubId));
   }
-}
 
 }

@@ -2,6 +2,8 @@
 
 namespace core\rest;
 
+use TinfoilHMAC\API\SecureAPIResponse;
+
 abstract class Response
 {
 
@@ -21,9 +23,8 @@ abstract class Response
   }
 
   public function send() {
-    http_response_code($this->code);
-    echo json_encode($this->getBody());
-    exit;
+    $response = new SecureAPIResponse($this->code, $this->getBody());
+    $response->send();
   }
 
 }

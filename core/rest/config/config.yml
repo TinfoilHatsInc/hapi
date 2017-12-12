@@ -3,7 +3,9 @@ rest_config:
     sendNotification:
       controller: 'core\notification\NotificationController::sendNotification'
     registration:
-      controller: 'core\hapi\Server::incomingRegistrationController'
+      controller: 'core\registration\RegistrationController::incomingRegistration'
+    alarmTrigger:
+      controller: 'core\alarm\AlarmController::alarmTriggered'
   get:
     registration:
       controller: 'core\registration\RegistrationController::chubRegistration'

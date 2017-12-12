@@ -2,9 +2,12 @@
 
 namespace core\rest;
 
+use core\exception\EntityNotFoundException;
+use core\exception\InvalidRequestParamException;
+use core\exception\ResourceNotFoundException;
 use PHPMailer\PHPMailer\Exception;
 use Symfony\Component\Yaml\Yaml;
-use TinfoilHMAC\API\SecureIncomingRequest;
+use TinfoilHMAC\API\SecureAPIRequest;
 use TinfoilHMAC\Exception\InvalidRequestException;
 use TinfoilHMAC\Exception\MissingParameterException;
 
@@ -85,7 +88,7 @@ class RestController
       return $methods;
     }
     try {
-      $request = SecureIncomingRequest::create();
+      $request = new SecureAPIRequest();
     } catch (InvalidRequestException $e) {
       return new ErrorResponse(ErrorResponse::HTTP_BAD_REQUEST, $e->getMessage());
     } catch (MissingParameterException $e) {
@@ -105,6 +108,12 @@ class RestController
       $controller =  $methodConfig['controller'];
       try {
         return $this->callController($controller, $params);
+      } catch (InvalidRequestParamException $e) {
+        return new ErrorResponse(ErrorResponse::HTTP_BAD_REQUEST, $e->getMessage());
+      } catch (EntityNotFoundException $e) {
+        return new ErrorResponse(ErrorResponse::HTTP_NOT_FOUND, $e->getMessage());
+      } catch (ResourceNotFoundException $e) {
+        return new ErrorResponse(ErrorResponse::HTTP_NOT_FOUND, $e->getMessage());
       } catch (Exception $e) {
         return new ErrorResponse(ErrorResponse::HTTP_INTERNAL_SERVER_ERROR, $e->getMessage());
       }

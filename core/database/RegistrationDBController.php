@@ -2,9 +2,8 @@
 
 namespace core\database;
 
-use core\rest\ErrorResponse;
-use core\rest\Response;
-use core\rest\SuccessResponse;
+use core\exception\EntityNotFoundException;
+use core\exception\InvalidRequestParamException;
 
 class RegistrationDBController
 {
@@ -20,18 +19,24 @@ class RegistrationDBController
   }
 
   /**
-   * @param $checkid
-   * @return Response
+   * @param $chubId
+   * @return bool|\mysqli_result
+   * @throws EntityNotFoundException
+   * @throws InvalidRequestParamException
    */
-  public function dbCheck($checkid)
+  public function checkChubId($chubId)
   {
-    $result = $this->databaseConnector->executeSQLSelectStatement(
-      'SELECT * from IDTable WHERE deviceid = ?',
-      new QueryParam('s', $checkid));
-    if (is_array($result) && count($result) > 0) {
-      return new SuccessResponse(SuccessResponse::HTTP_OK, $result);
+    if (strlen($chubId) != 20) {
+      throw new InvalidRequestParamException('Malformed CHUB ID.');
     } else {
-      return new ErrorResponse(ErrorResponse::HTTP_NOT_FOUND, 'No CHUB found with given id.');
+      $result = $this->databaseConnector->executeSQLSelectStatement(
+        'SELECT * FROM IDTable WHERE deviceid = ? LIMIT 1',
+        new QueryParam('s', $chubId));
+      if (is_array($result) && count($result) == 1) {
+        return $result[0];
+      } else {
+        throw new EntityNotFoundException('No CHUB found with given id.');
+      }
     }
   }
 

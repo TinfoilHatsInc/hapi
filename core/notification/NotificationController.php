@@ -2,10 +2,12 @@
 
 namespace core\notification;
 
+use core\database\PortalDBController;
 use core\rest\Response;
 
 class NotificationController
 {
+
 
   /**
    * @param $message
@@ -14,7 +16,9 @@ class NotificationController
    * @return Response
    */
   public static function sendNotification($message, $subject, $receiver) {
-    $mailNotification = new MailNotification($message, $subject, $receiver);
+    $portalDBController = new PortalDBController();
+    $user = $portalDBController->getUserDetails($receiver);
+    $mailNotification = new MailNotification($message, $subject, $user['email']);
     return $mailNotification->send();
   }
 

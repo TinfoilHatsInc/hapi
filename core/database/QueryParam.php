@@ -5,6 +5,11 @@ namespace core\database;
 class QueryParam
 {
 
+  const TYPE_STRING = 's';
+  const TYPE_INTEGER = 'i';
+  const TYPE_DOUBLE = 'd';
+  const TYPE_BLOB = 'b';
+
   /**
    * @var string
    */

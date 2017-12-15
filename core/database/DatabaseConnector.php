@@ -30,7 +30,9 @@ abstract class DatabaseConnector extends Singleton
       $config['host'],
       $config['dbusername'],
       $config['dbpassword'],
-      $config['dbname']
+      $config['dbname'],
+      3306,
+      '/tmp/mysql.sock'
     );
   }
 
@@ -110,6 +112,13 @@ abstract class DatabaseConnector extends Singleton
 
     return $result;
 
+  }
+
+  /**
+   * @return mixed
+   */
+  public function getLastInsertId() {
+    return $this->lastInsertID;
   }
 
 }

@@ -24,12 +24,17 @@ class ConfigReader
   {
 
     if (empty($this->config)) {
-
-      $filePath = __DIR__ . '/../../config/' . $this->configFileName . '.config.yml';
-      if (!file_exists($filePath)) {
-        throw new Exception('Config \'' . $this->configFileName . '\' could not be found.');
+      $configContainer = ConfigContainer::getInstance();
+      $config = $configContainer->getConfig($this->configFileName);
+      if(empty($config)) {
+        $filePath = __DIR__ . '/../../config/' . $this->configFileName . '.config.yml';
+        if (!file_exists($filePath)) {
+          throw new Exception('Config \'' . $this->configFileName . '\' could not be found.');
+        }
+        $config = Yaml::parse(file_get_contents($filePath), FILE_USE_INCLUDE_PATH);
+        $configContainer->setConfigInstance($this->configFileName, $config);
       }
-      $this->config = Yaml::parse(file_get_contents($filePath), FILE_USE_INCLUDE_PATH);
+      $this->config = $config;
     }
     return $this->config;
 
@@ -61,7 +66,7 @@ class ConfigReader
     }
 
     if (!empty($missing)) {
-      throw new Exception('Config file does not have ' . implode(', ', $missing) . ' defined.');
+      throw new Exception('Config \'' . $this->configFileName . '\' file does not have ' . implode(', ', $missing) . ' defined.');
     } else {
       if (!is_array($key)) {
         return $config[$key];

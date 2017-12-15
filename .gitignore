@@ -6,3 +6,4 @@ composer.lock
 !/config/*.example.yml
 core/**/cache/*
 .idea
+/files/images/*

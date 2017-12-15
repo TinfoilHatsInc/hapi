@@ -5,7 +5,7 @@ namespace core\rest;
 use core\exception\EntityNotFoundException;
 use core\exception\InvalidRequestParamException;
 use core\exception\ResourceNotFoundException;
-use PHPMailer\PHPMailer\Exception;
+use Exception;
 use Symfony\Component\Yaml\Yaml;
 use TinfoilHMAC\API\SecureAPIRequest;
 use TinfoilHMAC\Exception\InvalidRequestException;

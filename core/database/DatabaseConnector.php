@@ -50,7 +50,11 @@ abstract class DatabaseConnector extends Singleton
   {
     $stmt = $this->conn->prepare($query);
     if (!$stmt) {
-      throw new DatabaseException('Database not configured.');
+      if($this->conn->error) {
+        throw new DatabaseException($this->conn->error);
+      } else {
+        throw new DatabaseException('Database not configured.');
+      }
     }
 
     $paramTypes = '';

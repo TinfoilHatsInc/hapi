@@ -4,6 +4,7 @@ namespace core\utils;
 
 use core\database\PortalDBController;
 use core\database\RegistrationDBController;
+use core\exception\SharedKeyUpdateException;
 use TinfoilHMAC\Util\SharedKey;
 
 class HAPISharedKey extends SharedKey
@@ -19,11 +20,14 @@ class HAPISharedKey extends SharedKey
     $this->chubId = $chub['chubId'];
     $this->registrationDBController = new RegistrationDBController();
     $this->portalDBController = new PortalDBController();
-    if (!empty($chub['key']) && !empty($chub['email']) && !empty($chub['password'])
-      && $this->portalDBController->checkUserCredentials($this->chubId, $chub['email'], $chub['password'])
-      && $this->registrationDBController->saveChubSharedKey($this->chubId, $chub['key'])
-    ) {
-      $this->sharedKey = $chub['key'];
+    if (!empty($chub['key']) && !empty($chub['email']) && !empty($chub['password'])) {
+      if ($this->portalDBController->checkUserCredentials($this->chubId, $chub['email'], $chub['password'])
+        && $this->registrationDBController->saveChubSharedKey($this->chubId, $chub['key'])
+      ) {
+        $this->sharedKey = $chub['key'];
+      } else {
+        throw new SharedKeyUpdateException('Shared key update failure.');
+      }
     }
   }
 

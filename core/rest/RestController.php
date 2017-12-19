@@ -8,6 +8,7 @@ use core\exception\InvalidRequestParamException;
 use core\exception\InvalidRESTConfigException;
 use core\exception\MethodNotAllowedException;
 use core\exception\ResourceNotFoundException;
+use core\exception\SharedKeyUpdateException;
 use core\utils\HAPISharedKey;
 use Exception;
 use Symfony\Component\Yaml\Yaml;
@@ -94,18 +95,17 @@ class RestController
     try {
       $methods = $this->getMethods();
       $request = new SecureAPIRequest(HAPISharedKey::class);
-    } catch (InvalidRequestException $e) {
+    } catch (InvalidRequestException
+    | MissingParameterException
+    | InvalidSessionParamException $e) {
       return new ErrorResponse(ErrorResponse::HTTP_BAD_REQUEST, $e->getMessage());
-    } catch (MissingParameterException $e) {
-      return new ErrorResponse(ErrorResponse::HTTP_BAD_REQUEST, $e->getMessage());
-    } catch (InvalidSessionParamException $e) {
-      return new ErrorResponse(ErrorResponse::HTTP_BAD_REQUEST, $e->getMessage());
-    } catch (DatabaseException $e) {
+    } catch (DatabaseException
+    | InvalidRESTConfigException $e) {
       return new ErrorResponse(ErrorResponse::HTTP_INTERNAL_SERVER_ERROR, $e->getMessage());
     } catch (MethodNotAllowedException $e) {
       return new ErrorResponse(ErrorResponse::HTTP_METHOD_NOT_ALLOWED, $e->getMessage());
-    } catch (InvalidRESTConfigException $e) {
-      return new ErrorResponse(ErrorResponse::HTTP_INTERNAL_SERVER_ERROR, $e->getMessage());
+    } catch (SharedKeyUpdateException $e) {
+      return new ErrorResponse(ErrorResponse::HTTP_UNAUTHORIZED, $e->getMessage());
     } catch (Exception $e) {
       return new ErrorResponse(ErrorResponse::HTTP_INTERNAL_SERVER_ERROR, 'Unknown error.');
     }
@@ -123,9 +123,8 @@ class RestController
         return $this->callController($controller, $params);
       } catch (InvalidRequestParamException $e) {
         return new ErrorResponse(ErrorResponse::HTTP_BAD_REQUEST, $e->getMessage());
-      } catch (EntityNotFoundException $e) {
-        return new ErrorResponse(ErrorResponse::HTTP_NOT_FOUND, $e->getMessage());
-      } catch (ResourceNotFoundException $e) {
+      } catch (EntityNotFoundException
+      | ResourceNotFoundException $e) {
         return new ErrorResponse(ErrorResponse::HTTP_NOT_FOUND, $e->getMessage());
       } catch (InvalidRESTConfigException $e) {
         return new ErrorResponse(ErrorResponse::HTTP_INTERNAL_SERVER_ERROR, $e->getMessage());

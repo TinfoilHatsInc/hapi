@@ -35,4 +35,12 @@ class RegistrationDBController extends DatabaseController
     }
   }
 
+  public function saveChubSharedKey($chubId, $sharedKey) {
+    return (bool) $this->getDatabaseConnector()->executeSQLUpdateStatement(
+      'UPDATE IDTable SET devicekey = ? WHERE deviceid = ?',
+      new QueryParam(QueryParam::TYPE_STRING, $sharedKey),
+      new QueryParam(QueryParam::TYPE_STRING, $chubId)
+    );
+  }
+
 }

@@ -2,6 +2,7 @@
 
 namespace core\database;
 
+use core\exception\DatabaseException;
 use PHPMailer\PHPMailer\Exception;
 
 class PortalDBController extends DatabaseController
@@ -20,7 +21,6 @@ class PortalDBController extends DatabaseController
    */
   public function saveNotification($chubId, $triggerName)
   {
-
     $result = $this->getDatabaseConnector()->executeSQLInsertStatement(
       'INSERT INTO notification (chubid, triggername) VALUES (?, ?);',
       new QueryParam(QueryParam::TYPE_INTEGER, $chubId),
@@ -32,7 +32,6 @@ class PortalDBController extends DatabaseController
     } else {
       throw new Exception('Unknown database error.');
     }
-
   }
 
   /**
@@ -42,23 +41,47 @@ class PortalDBController extends DatabaseController
    */
   public function saveSnapshot($notificationId, $filePath)
   {
-
     $result = $this->getDatabaseConnector()->executeSQLInsertStatement(
       'INSERT INTO snapshot (notificationid, filepath) VALUES (?, ?)',
       new QueryParam(QueryParam::TYPE_INTEGER, $notificationId),
       new QueryParam(QueryParam::TYPE_STRING, $filePath)
     );
-
     return (bool) $result;
 
   }
 
+  /**
+   * @param $userId
+   * @return bool|\mysqli_result
+   */
   public function getUserDetails($userId) {
     $result = $this->getDatabaseConnector()->executeSQLSelectStatement(
       'SELECT * FROM user WHERE userid = ?',
       new QueryParam(QueryParam::TYPE_INTEGER, $userId)
     );
     return $result;
+  }
+
+  /**
+   * @param $chubId string
+   * @param $email string
+   * @param $password string
+   * @return bool
+   */
+  public function checkUserCredentials($chubId, $email, $password) {
+    throw new DatabaseException();
+    $result = $this->getDatabaseConnector()->executeSQLSelectStatement(
+      'SELECT user.password FROM user, user_chub WHERE user.userid = user_chub.userid AND user_chub.chubid = ? 
+      AND user.email = ? LIMIT 1',
+      new QueryParam(QueryParam::TYPE_STRING, $chubId),
+      new QueryParam(QueryParam::TYPE_STRING, $email)
+    );
+    if(!empty($result)) {
+      $passwordHash = $result[0]['password'];
+      return password_verify($password, $passwordHash);
+    } else {
+      return FALSE;
+    }
   }
 
 }

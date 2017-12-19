@@ -3,8 +3,10 @@
 namespace core\database;
 
 use core\common\Singleton;
+use core\exception\DatabaseException;
 use core\utils\ConfigReader;
 use mysqli;
+use PHPMailer\PHPMailer\Exception;
 
 abstract class DatabaseConnector extends Singleton
 {
@@ -40,18 +42,47 @@ abstract class DatabaseConnector extends Singleton
 
   /**
    * @param $query
-   * @param QueryParam[] $params
-   * @return bool|\mysqli_result
+   * @param array $params
+   * @return mixed
+   * @throws DatabaseException
    */
-  private function executeSQLStatement($query, array $params) {
+  private function executeSQLStatement($query, array $params)
+  {
     $stmt = $this->conn->prepare($query);
-    foreach($params as $param) {
-      $paramType = $param->getType();
-      $paramValue = $param->getValue();
-      $stmt->bind_param($paramType, $paramValue);
+    if (!$stmt) {
+      throw new DatabaseException('Database not configured.');
     }
+
+    $paramTypes = '';
+
+    $paramValues = [];
+
+    foreach ($params as $param) {
+      $paramTypes .= $param->getType();
+      $paramValues[] = $param->getValue();
+    }
+
+    $values = [
+      & $paramTypes,
+    ];
+
+    for ($i = 0; $i < count($paramValues); $i++) {
+      $values[] = &$paramValues[$i];
+    }
+
+    call_user_func_array(array($stmt, 'bind_param'), $values);
+
     $stmt->execute();
     $stmtResult = $stmt->get_result();
+
+    if (!$stmtResult) {
+      if (!empty($stmt->error)) {
+        return FALSE;
+      } else {
+        return $this->conn->affected_rows;
+      }
+    }
+
     return $stmtResult->fetch_all(MYSQLI_ASSOC);
   }
 
@@ -117,7 +148,8 @@ abstract class DatabaseConnector extends Singleton
   /**
    * @return mixed
    */
-  public function getLastInsertId() {
+  public function getLastInsertId()
+  {
     return $this->lastInsertID;
   }
 

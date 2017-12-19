@@ -27,4 +27,8 @@ abstract class Response
     $response->send();
   }
 
+  protected function getResponseCode() {
+    return $this->code;
+  }
+
 }

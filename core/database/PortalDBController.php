@@ -70,7 +70,7 @@ class PortalDBController extends DatabaseController
    */
   public function checkUserCredentials($chubId, $email, $password) {
     $result = $this->getDatabaseConnector()->executeSQLSelectStatement(
-      'SELECT user.chub_hash FROM user, chub WHERE user.user_id = chub.user_id AND chub.chub_id = ? 
+      'SELECT user.chub_hash FROM user, chub WHERE user.id = chub.user_id AND chub.id = ? 
       AND user.email = ? LIMIT 1',
       new QueryParam(QueryParam::TYPE_STRING, $chubId),
       new QueryParam(QueryParam::TYPE_STRING, $email)

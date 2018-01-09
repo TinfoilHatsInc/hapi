@@ -21,7 +21,7 @@ class RegistrationDBController extends DatabaseController
    */
   public function checkChubId($chubId)
   {
-    if (strlen($chubId) != 20) {
+    if (strlen($chubId) != 36) {
       throw new InvalidRequestParamException('Malformed CHUB ID.');
     } else {
       $result = $this->getDatabaseConnector()->executeSQLSelectStatement(

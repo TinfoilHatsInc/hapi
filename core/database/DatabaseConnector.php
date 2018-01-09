@@ -28,13 +28,14 @@ abstract class DatabaseConnector extends Singleton
       'dbpassword',
       'dbname',
     ]);
+    $socket = (new ConfigReader($this->getConfigName()))->requireConfig('socket', FALSE);
     $this->conn = new mysqli(
       $config['host'],
       $config['dbusername'],
       $config['dbpassword'],
       $config['dbname'],
       3306,
-      '/tmp/mysql.sock'
+      $socket
     );
   }
 
@@ -50,7 +51,7 @@ abstract class DatabaseConnector extends Singleton
   {
     $stmt = $this->conn->prepare($query);
     if (!$stmt) {
-      if($this->conn->error) {
+      if ($this->conn->error) {
         throw new DatabaseException($this->conn->error);
       } else {
         throw new DatabaseException('Database not configured.');

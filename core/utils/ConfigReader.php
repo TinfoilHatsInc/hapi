@@ -20,7 +20,7 @@ class ConfigReader
    * @return mixed
    * @throws Exception
    */
-  private function getConfig()
+  private function getConfigContent()
   {
 
     if (empty($this->config)) {
@@ -42,10 +42,11 @@ class ConfigReader
 
   /**
    * @param $key
+   * @param bool $errorOnMissing
    * @return string|array
    * @throws Exception
    */
-  public function requireConfig($key)
+  public function requireConfig($key, $errorOnMissing = TRUE)
   {
 
     $keys = $key;
@@ -53,19 +54,23 @@ class ConfigReader
       $keys = [$key];
     }
 
-    $config = $this->getConfig();
+    $config = $this->getConfigContent();
 
     $keyValues = [];
     $missing = [];
     foreach ($keys as $keyItem) {
       if (!array_key_exists($keyItem, $config) || $config[$keyItem] == '') {
-        $missing[] = '\'' . $keyItem . '\'';
+        if($errorOnMissing) {
+          $missing[] = '\'' . $keyItem . '\'';
+        } else {
+          $keyValues[$keyItem] = NULL;
+        }
       } else {
         $keyValues[$keyItem] = $config[$keyItem];
       }
     }
 
-    if (!empty($missing)) {
+    if (!empty($missing) && $errorOnMissing) {
       throw new Exception('Config \'' . $this->configFileName . '\' file does not have ' . implode(', ', $missing) . ' defined.');
     } else {
       if (!is_array($key)) {

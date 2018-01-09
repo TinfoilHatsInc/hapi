@@ -19,4 +19,11 @@ class RegistrationController
     return new SuccessResponse(SuccessResponse::HTTP_OK, $db->checkChubId($chubId));
   }
 
+  /**
+   * @return SuccessResponse
+   */
+  public function incomingRegistration() {
+    return new SuccessResponse(SuccessResponse::HTTP_OK, 'Initial registration done.');
+  }
+
 }

@@ -75,6 +75,7 @@ class AlarmController
       $status = 'off';
     }
     $this->portalDBController->alarmStatusUpdate($chubId, $status);
+    return new SuccessResponse(SuccessResponse::HTTP_OK, 'Status updated.');
   }
 
 }

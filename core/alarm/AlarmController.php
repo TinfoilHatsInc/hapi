@@ -68,4 +68,13 @@ class AlarmController
 
   }
 
+  public function alarmStatusUpdate($chubId, $status) {
+    if($status == 'enable') {
+      $status = 'armed';
+    } else {
+      $status = 'off';
+    }
+    $this->portalDBController->alarmStatusUpdate($chubId, $status);
+  }
+
 }

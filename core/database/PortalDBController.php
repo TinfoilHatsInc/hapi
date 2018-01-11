@@ -83,4 +83,13 @@ class PortalDBController extends DatabaseController
     }
   }
 
+  public function alarmStatusUpdate($chubId, $status) {
+    $result = $this->getDatabaseConnector()->executeSQLUpdateStatement(
+      'UPDATE chub SET alarm_status = ? WHERE chub.id = ?',
+      new QueryParam('s', $status),
+      new QueryParam('s', $chubId)
+    );
+    return (bool) $result;
+  }
+
 }

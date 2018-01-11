@@ -6,6 +6,8 @@ rest_config:
       controller: 'core\registration\RegistrationController::incomingRegistration'
     alarmTrigger:
       controller: 'core\alarm\AlarmController::alarmTriggered'
+    alarmStatusUpdate:
+      controller: 'core\alarm\AlarmController::alarmStatusUpdate'
   get:
     registration:
       controller: 'core\registration\RegistrationController::chubRegistration'

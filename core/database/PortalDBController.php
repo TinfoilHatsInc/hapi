@@ -104,8 +104,8 @@ class PortalDBController extends DatabaseController
     foreach($deadModules as $deadModule) {
       $this->getDatabaseConnector()->executeSQLInsertStatement(
         'INSERT INTO dead_module (chub_id, module_name, created_at, updated_at) VALUES (?, ?, NOW(), NOW())',
-        new QueryParam('s', $deadModule),
-        new QueryParam('s', $chubId)
+        new QueryParam('s', $chubId),
+        new QueryParam('s', $deadModule)
       );
     }
   }

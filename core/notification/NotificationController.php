@@ -22,7 +22,10 @@ class NotificationController
     $user = $portalDBController->getUserByChub($chubId);
     if(!empty($user)) {
       $user = $user[0];
-      $mailNotification = new MailNotification($message, $subject, $user['email']);
+      $mailNotification = new MailNotification([
+        'username' => $user['first_name'] . ' ' . $user['last_name'],
+        'body' => $message,
+      ], $subject, $user['email']);
       return $mailNotification->send();
     } else {
       throw new EntityNotFoundException('User not found.');

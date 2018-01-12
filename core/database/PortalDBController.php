@@ -97,6 +97,7 @@ class PortalDBController extends DatabaseController
       'SELECT user.* FROM user, chub WHERE user.id = chub.user_id AND chub.id = ?',
       new QueryParam('s', $chubId)
     );
+    return $result;
   }
 
 }

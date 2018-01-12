@@ -71,8 +71,10 @@ class AlarmController
   public function alarmStatusUpdate($chubId, $status) {
     if($status == 'enable') {
       $status = 'armed';
+      NotificationController::sendNotification('The alarm was turned on.', 'Alarm status change', $chubId);
     } else {
       $status = 'off';
+      NotificationController::sendNotification('The alarm was turned off.', 'Alarm status change', $chubId);
     }
     $this->portalDBController->alarmStatusUpdate($chubId, $status);
     return new SuccessResponse(SuccessResponse::HTTP_OK, 'Status updated.');

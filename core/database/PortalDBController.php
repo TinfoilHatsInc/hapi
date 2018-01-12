@@ -92,4 +92,11 @@ class PortalDBController extends DatabaseController
     return (bool) $result;
   }
 
+  public function getUserByChub($chubId) {
+    $result = $this->getDatabaseConnector()->executeSQLSelectStatement(
+      'SELECT user.* FROM user, chub WHERE user.id = chub.user_id AND chub.id = ?',
+      new QueryParam('s', $chubId)
+    );
+  }
+
 }

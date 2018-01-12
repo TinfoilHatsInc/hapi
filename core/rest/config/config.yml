@@ -8,6 +8,8 @@ rest_config:
       controller: 'core\alarm\AlarmController::alarmTriggered'
     alarmStatusUpdate:
       controller: 'core\alarm\AlarmController::alarmStatusUpdate'
+    notifyDeadModules:
+      controller: 'core\deadmodule\DeadModuleController::notifyDeadModules'
   get:
     registration:
       controller: 'core\registration\RegistrationController::chubRegistration'

@@ -40,4 +40,10 @@ class HAPISharedKey extends SharedKey
     return $this->sharedKey;
   }
 
+  public function getSetKey()
+  {
+    $chub = $this->registrationDBController->checkChubId($this->chubId);
+    return $chub['set_key'];
+  }
+
 }

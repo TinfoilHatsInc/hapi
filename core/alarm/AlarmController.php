@@ -28,7 +28,7 @@ class AlarmController
 
   public function alarmTriggered($chubId, $triggerName, array $snapshots)
   {
-    $chub = $this->registrationDBController->checkChubId($chubId);
+    $this->registrationDBController->checkChubId($chubId);
 
     $notificationId = $this->portalDBController->saveNotification($chubId, $triggerName);
 
@@ -37,7 +37,7 @@ class AlarmController
     NotificationController::sendNotification(
       'Alarm \'' . $triggerName . '\' was triggered in your house!',
       'Alarm triggered',
-      $chub['userid']
+      $chubId
     );
 
     return new SuccessResponse(SuccessResponse::HTTP_CREATED, 'Done.');

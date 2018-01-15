@@ -30,6 +30,8 @@ class AlarmController
   {
     $this->registrationDBController->checkChubId($chubId);
 
+    $this->alarmStatusUpdate($chubId, 'triggered');
+
     $notificationId = $this->portalDBController->saveNotification($chubId, $triggerName);
 
     $this->convertSnapshotsToImage($notificationId, $chubId, $snapshots);
@@ -64,10 +66,13 @@ class AlarmController
     }
   }
 
-  public function alarmStatusUpdate($chubId, $status) {
-    if($status == 'enable') {
+  public function alarmStatusUpdate($chubId, $status)
+  {
+    if ($status == 'enable') {
       $status = 'armed';
       NotificationController::sendNotification('The alarm was turned on.', 'Alarm status change', $chubId);
+    } elseif ($status == 'triggered') {
+      $status = 'on';
     } else {
       $status = 'off';
       NotificationController::sendNotification('The alarm was turned off.', 'Alarm status change', $chubId);

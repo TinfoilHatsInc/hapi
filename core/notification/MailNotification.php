@@ -28,6 +28,7 @@ class MailNotification extends Notification
 
   /**
    * @return Response
+   * @throws Exception
    */
   public function send()
   {
@@ -75,14 +76,10 @@ class MailNotification extends Notification
     $this->mail->Subject = $this->getSubject();
     $this->mail->addAddress($this->getReceiver());
     $this->mail->Body = $body;
-    try {
-      if (!$this->mail->send()) {
-        return new ErrorResponse(ErrorResponse::HTTP_INTERNAL_SERVER_ERROR, 'Mail could not be send.');
-      } else {
-        return new SuccessResponse(SuccessResponse::HTTP_OK, 'Notification send.');
-      }
-    } catch (Exception $e) {
-      return new ErrorResponse(ErrorResponse::HTTP_INTERNAL_SERVER_ERROR, $e->getMessage());
+    if (!$this->mail->send()) {
+      throw new Exception('Mail could not be send.');
+    } else {
+      return new SuccessResponse(SuccessResponse::HTTP_OK, 'Notification send.');
     }
 
   }

@@ -23,7 +23,7 @@ class PortalDBController extends DatabaseController
   {
     $result = $this->getDatabaseConnector()->executeSQLInsertStatement(
       'INSERT INTO notification (chub_id, trigger_name, created_at, updated_at) VALUES (?, ?, NOW(), NOW());',
-      new QueryParam(QueryParam::TYPE_INTEGER, $chubId),
+      new QueryParam(QueryParam::TYPE_STRING, $chubId),
       new QueryParam(QueryParam::TYPE_STRING, $triggerName)
     );
 

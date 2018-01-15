@@ -36,15 +36,15 @@ class PortalDBController extends DatabaseController
 
   /**
    * @param $notificationId
-   * @param $filePath
+   * @param $fileName
    * @return bool
    */
-  public function saveSnapshot($notificationId, $filePath)
+  public function saveSnapshot($notificationId, $fileName)
   {
     $result = $this->getDatabaseConnector()->executeSQLInsertStatement(
-      'INSERT INTO snapshot (notification_id, file_path) VALUES (?, ?)',
+      'INSERT INTO snapshot (notification_id, file_name) VALUES (?, ?)',
       new QueryParam(QueryParam::TYPE_INTEGER, $notificationId),
-      new QueryParam(QueryParam::TYPE_STRING, $filePath)
+      new QueryParam(QueryParam::TYPE_STRING, $fileName)
     );
     return (bool) $result;
 

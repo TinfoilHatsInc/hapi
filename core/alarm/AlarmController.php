@@ -46,26 +46,22 @@ class AlarmController
 
   private function convertSnapshotsToImage($notificationId, $chubId, array $snapshots)
   {
-
     $configReader = new ConfigReader('snapshots');
     $filePath = $configReader->requireConfig('imageSavePath');
-
-    $imageFiles = [];
 
     foreach ($snapshots as $index => $snapshot) {
       $pos = strpos($snapshot, ';');
       $type = explode('/', explode(':', substr($snapshot, 0, $pos))[1])[1];
 
-      $imageName = $filePath . $chubId . '-' . time() . '-' . $index . '.' . $type;
+      $name = $chubId . '-' . time() . '-' . $index . '.' . $type;
+      $imageName = $filePath . $name;
 
       $ifp = fopen($imageName, 'wb');
       $data = explode(',', $snapshot);
       fwrite($ifp, base64_decode($data[1]));
       fclose($ifp);
-      $imageFiles[] = $imageName;
-      $this->portalDBController->saveSnapshot($notificationId, $imageName);
+      $this->portalDBController->saveSnapshot($notificationId, $name);
     }
-
   }
 
   public function alarmStatusUpdate($chubId, $status) {

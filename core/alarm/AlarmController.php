@@ -30,6 +30,8 @@ class AlarmController
   {
     $this->registrationDBController->checkChubId($chubId);
 
+    $this->alarmStatusUpdate($chubId, 'triggered', FALSE);
+
     $notificationId = $this->portalDBController->saveNotification($chubId, $triggerName);
 
     $this->convertSnapshotsToImage($notificationId, $chubId, $snapshots);

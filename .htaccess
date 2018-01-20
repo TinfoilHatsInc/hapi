@@ -9,3 +9,13 @@ RewriteRule ^hapi/([a-zA-Z0-9]*)$ /index.php?method=$1 [L,QSA]
 
 RewriteCond %{THE_REQUEST} !/hapi/([a-zA-Z0-9]*) [NC]
 RewriteRule ^ - [NC,R=404,L]
+
+<Files *.*>
+    Order Allow,Deny
+    Deny from all
+</Files>
+
+<Files index.php>
+    Order Allow,Deny
+    Allow from all
+</Files>

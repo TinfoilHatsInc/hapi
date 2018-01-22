@@ -1,4 +1,6 @@
 {
+  "name": "tinfoilhatsinc/hapi",
+  "license": "GPL",
   "require": {
     "phpmailer/phpmailer": "^6.0",
     "symfony/yaml": "^3.3",

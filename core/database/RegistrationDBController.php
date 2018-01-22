@@ -44,7 +44,7 @@ class RegistrationDBController extends DatabaseController
         'SELECT * FROM IDTable WHERE deviceid = ? LIMIT 1',
         new QueryParam('s', $chubId));
       if (is_array($result) && count($result) == 1) {
-        return $result;
+        return $result[0];
       } else {
         throw new EntityNotFoundException('No CHUB found with given id.');
       }

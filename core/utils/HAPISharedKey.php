@@ -31,7 +31,11 @@ class HAPISharedKey extends SharedKey
     }
   }
 
-  public function getSharedKey()
+  /**
+   * @param bool $ignoreInvalidSK
+   * @return mixed
+   */
+  public function getSharedKey($ignoreInvalidSK = FALSE)
   {
     if (empty($this->sharedKey)) {
       $chub = $this->registrationDBController->checkChubId($this->chubId);

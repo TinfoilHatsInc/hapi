@@ -35,8 +35,25 @@ class RegistrationDBController extends DatabaseController
     }
   }
 
-  public function saveChubSharedKey($chubId, $sharedKey) {
-    return (bool) $this->getDatabaseConnector()->executeSQLUpdateStatement(
+  public function getChubDetails($chubId)
+  {
+    if (strlen($chubId) != 36) {
+      throw new InvalidRequestParamException('Malformed CHUB ID.');
+    } else {
+      $result = $this->getDatabaseConnector()->executeSQLSelectStatement(
+        'SELECT * FROM IDTable WHERE deviceid = ? LIMIT 1',
+        new QueryParam('s', $chubId));
+      if (is_array($result) && count($result) == 1) {
+        return $result;
+      } else {
+        throw new EntityNotFoundException('No CHUB found with given id.');
+      }
+    }
+  }
+
+  public function saveChubSharedKey($chubId, $sharedKey)
+  {
+    return (bool)$this->getDatabaseConnector()->executeSQLUpdateStatement(
       'UPDATE IDTable SET devicekey = ? WHERE deviceid = ?',
       new QueryParam(QueryParam::TYPE_STRING, $sharedKey),
       new QueryParam(QueryParam::TYPE_STRING, $chubId)

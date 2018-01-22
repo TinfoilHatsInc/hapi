@@ -38,7 +38,7 @@ class HAPISharedKey extends SharedKey
   public function getSharedKey($ignoreInvalidSK = FALSE)
   {
     if (empty($this->sharedKey)) {
-      $chub = $this->registrationDBController->checkChubId($this->chubId);
+      $chub = $this->registrationDBController->getChubDetails($this->chubId);
       $this->sharedKey = $chub['devicekey'];
     }
     return $this->sharedKey;
@@ -46,7 +46,7 @@ class HAPISharedKey extends SharedKey
 
   public function getSetKey()
   {
-    $chub = $this->registrationDBController->checkChubId($this->chubId);
+    $chub = $this->registrationDBController->getChubDetails($this->chubId);
     return $chub['set_key'];
   }
 
